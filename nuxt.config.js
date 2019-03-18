@@ -1,5 +1,12 @@
 module.exports = {
   /*
+  ** Env variables
+  */
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+    apiUrl : 'https://jsonplaceholder.typicode.com/',
+  },
+    /*
   ** Headers of the page
   */
   head: {
@@ -17,10 +24,35 @@ module.exports = {
   ** Customize the progress bar color
   */
   loading: { color: '#3B8070' },
-  /*
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/style-resources'
+  ],
+  axios: {
+    proxy: true
+  },
+  proxy: {
+    '/api/': { target: 'https://jsonplaceholder.typicode.com/', pathRewrite: {'^/api/': ''} }
+    // '/api2/': 'http://api.another-website.com'
+  },
+  styleResources: {
+    scss: [
+      'assets/styles/index.scss',
+    ]
+  },
+  plugins: [
+    '~/plugins/i18n.js',
+    '~/plugins/vuetify.js',
+    '~/plugins/axios',
+  ],
+    /*
   ** Build configuration
   */
   build: {
+    vendor: [
+      'vue-i18n',
+      'vuetify'
+    ],
     /*
     ** Run ESLint on save
     */
@@ -34,6 +66,5 @@ module.exports = {
         })
       }
     }
-  }
+  },
 }
-
