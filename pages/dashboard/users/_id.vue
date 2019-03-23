@@ -16,10 +16,10 @@
         <UserTodos :todos="todos" />
       </v-tab-item>
       <v-tab-item>
-        <UserAlbums :albums="albums" />
+        <UserAlbums :albums="albums" :photos="photos" :visible="albumVisible" @openAlbum="openAlbum"/>
       </v-tab-item>
       <v-tab-item>
-        <UserPosts :posts="posts" />
+        <UserPosts :posts="posts" :comments="comments" @checkComments="checkComments"/>
       </v-tab-item>
     </v-tabs>
   </section>
@@ -42,18 +42,39 @@ export default {
     UserInfos,
     UserTodos,
     UserAlbums,
-    UserPosts
+    UserPosts,
   },
   validate ({ params }) {
-    // Doit être un nombre
+    // Must be a number
     return /^\d+$/.test(params.id)
   },
   async asyncData({ $axios, params }) {
     const user = await $axios.$get(`/api/users/${ params.id }`)
-    const posts = await $axios.$get(`/api/users/${ params.id }/posts`)
-    const todos = await $axios.$get(`/api/users/${ params.id }/todos`)
-    const albums = await $axios.$get(`/api/users/${ params.id }/albums`)
+    const posts = await $axios.$get(`/api/posts/?userId=${ params.id }`)
+    const todos = await $axios.$get(`/api/todos/?userId=${ params.id }`)
+    const albums = await $axios.$get(`/api/albums/?userId=${ params.id }`)
     return { user, posts, todos, albums }
   },
+  data () {
+    return {
+      photos: [],
+      albumVisible : false,
+      comments: [],
+    }
+  },
+  methods: {
+    openAlbum(albumId){
+      this.$axios.get(`/api/photos/?albumId=${albumId}`).then(res => {
+        this.photos = res.data
+        this.albumVisible = true
+      })
+    },
+    checkComments(postId){
+      this.$axios.get(`/api/comments/?postId=${postId}`).then(res => {
+        this.comments.push(...res.data)
+      })
+    }
+  },
+
 }
 </script>

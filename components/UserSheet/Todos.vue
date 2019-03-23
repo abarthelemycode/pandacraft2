@@ -1,10 +1,9 @@
 <template>
   <v-container>
     <v-list subheader>
-      <v-subheader inset>Your Tasks</v-subheader>
       <v-list-tile  class="card" v-for="todo in todosDisplay" :key="todo.id">
         <v-list-tile-content>
-          <v-list-tile-title>{{ todo.id }} - {{ todo.title }}</v-list-tile-title>
+          <v-list-tile-title>{{ todo.title }}</v-list-tile-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-tooltip bottom v-if="todo.completed === true">
